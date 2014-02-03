@@ -35,7 +35,7 @@
                 Ghost.Validate.handleErrors();
             } else {
                 $.ajax({
-                    url: Ghost.paths.ghostRoot + '/ghost/signin/',
+                    url: Ghost.paths.subdir + '/ghost/signin/',
                     type: 'POST',
                     headers: {
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -64,6 +64,7 @@
     Ghost.Views.Signup = Ghost.View.extend({
 
         initialize: function () {
+            this.submitted = "no";
             this.render();
         },
 
@@ -95,12 +96,14 @@
             Ghost.Validate.check(name, "Please enter a name").len(1);
             Ghost.Validate.check(email, "Please enter a correct email address").isEmail();
             Ghost.Validate.check(password, "Your password is not long enough. It must be at least 8 characters long.").len(8);
+            Ghost.Validate.check(this.submitted, "Ghost is signing you up. Please wait...").equals("no");
 
             if (Ghost.Validate._errors.length > 0) {
                 Ghost.Validate.handleErrors();
             } else {
+                this.submitted = "yes";
                 $.ajax({
-                    url: Ghost.paths.ghostRoot + '/ghost/signup/',
+                    url: Ghost.paths.subdir + '/ghost/signup/',
                     type: 'POST',
                     headers: {
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -114,6 +117,7 @@
                         window.location.href = msg.redirect;
                     },
                     error: function (xhr) {
+                        this.submitted = "no";
                         Ghost.notifications.clearEverything();
                         Ghost.notifications.addItem({
                             type: 'error',
@@ -157,7 +161,7 @@
                 Ghost.Validate.handleErrors();
             } else {
                 $.ajax({
-                    url: Ghost.paths.ghostRoot + '/ghost/forgotten/',
+                    url: Ghost.paths.subdir + '/ghost/forgotten/',
                     type: 'POST',
                     headers: {
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -212,6 +216,7 @@
                 ne2Password = this.$('input[name="ne2password"]').val();
 
             if (newPassword !== ne2Password) {
+                Ghost.notifications.clearEverything();
                 Ghost.notifications.addItem({
                     type: 'error',
                     message: "Your passwords do not match.",
@@ -224,7 +229,7 @@
             this.$('input, button').prop('disabled', true);
 
             $.ajax({
-                url: Ghost.paths.ghostRoot + '/ghost/reset/' + this.token + '/',
+                url: Ghost.paths.subdir + '/ghost/reset/' + this.token + '/',
                 type: 'POST',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')

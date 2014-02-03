@@ -4,11 +4,11 @@
 
     function ghostPaths() {
         var path = window.location.pathname,
-            root = path.substr(0, path.search('/ghost/'));
+            subdir = path.substr(0, path.search('/ghost/'));
 
         return {
-            ghostRoot: root,
-            apiRoot: root + '/ghost/api/v0.1'
+            subdir: subdir,
+            apiRoot: subdir + '/ghost/api/v0.1'
         };
     }
 
@@ -41,10 +41,14 @@
         return Backbone.oldsync(method, model, options, error);
     };
 
-    Ghost.init = function () {
-        // remove the temporary message which appears
-        $('.js-msg').remove();
+    Backbone.oldModelProtoUrl = Backbone.Model.prototype.url;
+    //overwrite original url method to add slash to end of the url if needed.
+    Backbone.Model.prototype.url = function () {
+        var url = Backbone.oldModelProtoUrl.apply(this, arguments);
+        return url + (url.charAt(url.length - 1) === '/' ? '' : '/');
+    };
 
+    Ghost.init = function () {
         Ghost.router = new Ghost.Router();
 
         // This is needed so Backbone recognizes elements already rendered server side
@@ -54,7 +58,7 @@
         Backbone.history.start({
             pushState: true,
             hashChange: false,
-            root: Ghost.paths.ghostRoot + '/ghost'
+            root: Ghost.paths.subdir + '/ghost'
         });
     };
 
