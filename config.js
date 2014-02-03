@@ -54,9 +54,7 @@ config = {
                 password: 'Xc648poUh-Y7ya1LDNh7YYjJzH',
                 database: 'd2g9c41vlfet1t',
                 port: '5432'
-                //filename: path.join(__dirname, '/content/data/ghost.db')
-            },
-            debug: false
+            }
         },
         server: {
             // Host to be passed to node's `net.Server#listen()`
