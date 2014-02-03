@@ -47,7 +47,7 @@ config = {
         url: 'http://my-ghost-blog.com',
         mail: {},
         database: {
-            client: 'sqlite3',
+            client: 'postgres',
             connection: {
                 host: 'ec2-184-73-251-115.compute-1.amazonaws.com',
                 user: 'nxshbfzrxduzdw',
